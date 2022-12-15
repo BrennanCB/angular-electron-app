@@ -1,4 +1,17 @@
 ###*First check it exists a version of your library compatible with the version of Angular defined in package.json.*
+
+### How to install ng-bootstrap
+
+``` bash
+ng add @ng-bootstrap/ng-bootstrap
+```
+
+### How to install ngx-bootstrap
+
+``` bash
+ng add ngx-bootstrap
+```
+
 ### How to install Angular Material
 
 Add Angular Material using `ng add` command:
