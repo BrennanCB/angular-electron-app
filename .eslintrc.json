@@ -1,0 +1,175 @@
+{
+  "root": true,
+  "ignorePatterns": [
+    "**/*"
+  ],
+  "overrides": [
+    {
+      "files": [
+        "*.ts"
+      ],
+      "parserOptions": {
+        "createDefaultProgram": true
+      },
+      "plugins": [
+        "jasmine"
+      ],
+      "extends": [
+        "eslint:recommended",
+        "plugin:@angular-eslint/recommended",
+        "plugin:@angular-eslint/template/process-inline-templates",
+        "plugin:jasmine/recommended"
+      ],
+      "rules": {
+        "@angular-eslint/component-selector": [
+          "error",
+          {
+            "type": "element",
+            "prefix": "app",
+            "style": "kebab-case"
+          }
+        ],
+        "curly": [
+          "error",
+          "multi-line"
+        ],
+        "@typescript-eslint/naming-convention": [
+          "error",
+          {
+            "selector": [
+              "classProperty",
+              "objectLiteralProperty",
+              "typeProperty",
+              "classMethod",
+              "objectLiteralMethod",
+              "typeMethod",
+              "accessor",
+              "enumMember"
+            ],
+            "format": null,
+            "modifiers": [
+              "requiresQuotes"
+            ]
+          }
+        ],
+        "@angular-eslint/component-class-suffix": [
+          "error",
+          {
+            "suffixes": [ "Component", "Modal" ]
+          }
+        ],
+        "@angular-eslint/directive-selector": [
+          "error",
+          {
+            "type": "attribute",
+            "prefix": "app",
+            "style": "camelCase"
+          }
+        ],
+        "@angular-eslint/use-pipe-transform-interface": "error",
+        "@typescript-eslint/no-invalid-this": "error",
+        "@typescript-eslint/no-magic-numbers": [
+          "error",
+          {
+            "detectObjects": true,
+            "enforceConst": true,
+            "ignoreArrayIndexes": true,
+            "ignoreEnums": true,
+            "ignore": [0, 1, -1]
+          }
+        ],
+        "@typescript-eslint/no-shadow": "error",
+        "@typescript-eslint/no-unused-vars": "error",
+        "array-callback-return": "error",
+        "block-scoped-var": "error",
+        "comma-dangle": [
+          "error",
+          {
+            "arrays": "always-multiline",
+            "objects": "always-multiline",
+            "imports": "always-multiline",
+            "exports": "always-multiline",
+            "functions": "always-multiline"
+          }
+        ],
+        "consistent-return": "error",
+        "consistent-this": "error",
+        "max-classes-per-file": ["error", 1],
+        "max-len": [
+          "error",
+          {
+            "code": 120
+          }
+        ],
+        "no-alert": "error",
+        "no-await-in-loop": "error",
+        "no-console": [
+          "error",
+          {
+            "allow": ["error"]
+          }
+        ],
+        "no-eval": "error",
+        "no-new-func": "error",
+        "no-new-wrappers": "error",
+        "no-param-reassign": [
+          "error",
+          {
+            "props": true,
+            "ignorePropertyModificationsForRegex": ["^mut"]
+          }
+        ],
+        "no-proto": "error",
+        "no-return-await": "error",
+        "no-unused-vars": "off",
+        "no-use-before-define": "warn",
+        "prefer-const": "error",
+        "prefer-rest-params": "error",
+        "no-trailing-spaces": "error",
+        "@typescript-eslint/no-explicit-any": "error",
+        "@typescript-eslint/no-inferrable-types": "error"
+      },
+      "env": {
+        "jasmine": true,
+        "browser": true
+      }
+    },
+    {
+      "files": [
+        "*.html"
+      ],
+      "extends": [
+        "plugin:@angular-eslint/template/recommended"
+      ],
+      "rules": {}
+    },
+    {
+      "files": [
+        "*.ts",
+        "*.tsx",
+        "*.js",
+        "*.jsx"
+      ],
+      "rules": {
+        "@nrwl/nx/enforce-module-boundaries": [
+          "error",
+          {
+            "enforceBuildableLibDependency": true,
+            "allow": [],
+            "depConstraints": [
+              {
+                "sourceTag": "*",
+                "onlyDependOnLibsWithTags": [
+                  "*"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "plugins": [
+    "@nrwl/nx"
+  ]
+}

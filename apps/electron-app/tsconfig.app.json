@@ -1,0 +1,22 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "../../dist/out-tsc",
+    "types": [],
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true
+  },
+  "files": [
+    "src/main.ts",
+    "src/polyfills.ts"
+  ],
+  "include": [
+    "**/*.d.ts"
+  ],
+  "exclude": [
+    "**/*.test.ts",
+    "**/*.spec.ts",
+    "electron/**/*.ts",
+    "scripts/**/*.ts"
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "appId": "com.electron.electronite.app",
+  "asar": false,
+  "directories": {
+    "app": "apps/electron-app/electron/",
+    "output": "apps/electron-app/release/"
+  },
+  "files": [
+    "**/*",
+    "!**/*.ts",
+    "!*.map",
+    "!package.json",
+    "!webpack.config.js",
+    "!package-lock.json"
+  ],
+  "extraResources": [
+    {
+      "from": "apps/electron-app/dist",
+      "to": "app",
+      "filter": [
+        "**/*"
+      ]
+    }
+  ],
+  "win": {
+    "icon": "apps/electron-app/dist/assets/icons",
+    "target": [
+      "nsis"
+    ]
+  },
+  "mac": {
+    "icon": "apps/electron-app/dist/assets/icons",
+    "target": [
+      "default"
+    ]
+  },
+  "linux": {
+    "icon": "apps/electron-app/dist/assets/icons",
+    "target": [
+      "AppImage"
+    ]
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "name": "electron-app",
+  "version": "0.1.0",
+  "main": "main.js",
+  "description": "app app",
+  "private": true,
+  "dependencies": {
+    "electron-store": "8.1.0",
+    "keytar": "7.9.0",
+    "dotenv": "16.0.2"
+  }
+}

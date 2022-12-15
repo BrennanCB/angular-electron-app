@@ -1,0 +1,108 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/electron-app/src",
+  "projectType": "application",
+  "projectName": "electron-app",
+  "generators": {
+    "@schematics/angular:application": {
+      "strict": true
+    },
+    "@schematics/angular:component": {
+      "style": "scss"
+    }
+  },
+  "prefix": "app",
+  "targets": {
+    "build": {
+      "executor": "@angular-builders/custom-webpack:browser",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "apps/electron-app/dist",
+        "index": "apps/electron-app/src/index.html",
+        "main": "apps/electron-app/src/main.ts",
+        "polyfills": "apps/electron-app/src/polyfills.ts",
+        "tsConfig": "apps/electron-app/tsconfig.app.json",
+        "inlineStyleLanguage": "scss",
+        "assets": [
+          "apps/electron-app/src/favicon.ico",
+          "apps/electron-app/src/assets"
+        ],
+        "styles": [
+          "apps/electron-app/src/styles.scss"
+        ],
+        "scripts": [],
+        "customWebpackConfig": {
+          "path": "apps/electron-app/scripts/angular.webpack.js",
+          "replaceDuplicatePlugins": true
+        }
+      },
+      "configurations": {
+        "dev": {
+          "optimization": false,
+          "outputHashing": "all",
+          "sourceMap": true,
+          "namedChunks": false,
+          "aot": true,
+          "extractLicenses": true,
+          "vendorChunk": false,
+          "buildOptimizer": false,
+          "fileReplacements": [  ]
+        },
+        "production": {
+          "optimization": true,
+          "outputHashing": "all",
+          "sourceMap": false,
+          "namedChunks": false,
+          "aot": true,
+          "extractLicenses": true,
+          "vendorChunk": false,
+          "buildOptimizer": true,
+          "fileReplacements": [  ]
+        }
+      }
+    },
+    "serve": {
+      "executor": "@angular-builders/custom-webpack:dev-server",
+      "options": {
+        "browserTarget": "electron-app:build"
+      },
+      "configurations": {
+        "dev": {
+          "browserTarget": "electron-app:build:dev"
+        },
+        "production": {
+          "browserTarget": "electron-app:build:production"
+        }
+      }
+    },
+    "extract-i18n": {
+      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "options": {
+        "browserTarget": "electron-app:build"
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/electron-app"],
+      "options": {
+        "jestConfig": "apps/electron-app/jest.config.ts"
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "apps/electron-app/**/*.ts",
+          "apps/electron-app/**/*.html"
+        ]
+      }
+    },
+    "version": {
+      "executor": "@jscutlery/semver:version",
+      "options": {
+        "preset": "conventional",
+        "tagPrefix": ""
+      }
+    }
+  }
+}

@@ -1,0 +1,174 @@
+name: Tag, Release & Publish Everything
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        type: choice
+        description: Version type following SEMVER specification
+        options:
+          - patch
+          - minor
+          - major
+        required: false
+        default: minor
+
+jobs:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.VERSION_TOKEN }}
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - run: |
+          echo "💡 Set up global user"
+          git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+          git config --global user.name "${GITHUB_ACTOR}"
+      - run: echo "💡  The ${{ github.repository }} repository has been cloned to the runner."
+      - run: echo "🖥️  The workflow is now ready to test your code on the runner."
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.10.0
+          registry-url: 'https://registry.npmjs.org'
+          cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
+      - name: Install dependencies
+        run: npm ci
+      - name: Executing version update
+        id: update-lib-version
+        run: |
+          npm run version-affected:libs
+      - run: echo "🍏  This job's status is ${{ job.status }}."
+      - name: list dist
+        if: failure() && steps.update-lib-version.outcome != 'success'
+        run: ls dist/packages/
+
+  version-app:
+    needs: version-libs
+    outputs:
+      tag: " ${{ steps.vars.outputs.tag }} "
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.VERSION_TOKEN }}
+    if: "inputs.version != 'default'"
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - run: |
+          echo "💡 Set up global user"
+          git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+          git config --global user.name "${GITHUB_ACTOR}"
+      - run: git pull origin master --tags
+      - run: echo "💡  The ${{ github.repository }} repository has been cloned to the runner."
+      - run: echo "🖥️  The workflow is now ready to test your code on the runner."
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.10.0
+          registry-url: 'https://registry.npmjs.org'
+          cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
+      - name: Install dependencies
+        run: npm ci
+      - run: echo "Generate ${{ inputs.version }} version, changelog and tag from ${{ github.ref }}"
+      - name: Executing forced version
+        if: "inputs.version != 'default'"
+        run: npx nx run electron-app:version --releaseAs=${{ inputs.version }}
+      - name: Executing automated version
+        if: "inputs.version == 'default'"
+        run: npx nx run electron-app:version
+      - name: Sync electron package json
+        run: |
+          targetVersion=$(npx json -f apps/electron-app/package.json version)
+          npx json -I -f apps/electron-app/electron/package.json -e "this.version=\"$targetVersion\""
+
+          git add ./apps/electron-app/electron/package.json
+          git commit --amend --no-edit
+          git tag -d ${targetVersion}
+          git tag -a ${targetVersion} -m "chore(electron-app): release version ${targetVersion}"
+
+          git push origin --follow-tags
+      - run: echo "🍏  This job's status is ${{ job.status }}."
+      - name: Set output tag
+        id: vars
+        run: echo "::set-output name=tag::$(git describe --tags --abbrev=0)"
+
+  release:
+    needs: version-app
+    env:
+      GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - run: |
+          echo "💡 Set up global user"
+          git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+          git config --global user.name "${GITHUB_ACTOR}"
+      - run: git pull origin master --tags
+      - run: echo "💡  The ${{ github.repository }} repository has been cloned to the runner."
+      - run: echo "🖥️  The workflow is now ready to test your code on the runner."
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.10.0
+          registry-url: 'https://registry.npmjs.org'
+      - run: |
+          echo "Create release draft from ${{ needs.version-app.outputs.tag }}"
+          gh release create ${{ needs.version-app.outputs.tag }} -d --generate-notes
+      - run: echo "🍏  This job's status is ${{ job.status }}."
+
+  publish:
+    needs:
+      - version-app
+      - release
+    runs-on: macos-latest
+    env:
+      GH_TOKEN: ${{ secrets.BUILD_TOKEN }}
+      RELEASE_VERSION: ${{ needs.version-app.outputs.tag }}
+      USE_HARD_LINKS: false
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - run: |
+          echo "💡 Set up global user"
+          git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+          git config --global user.name "${GITHUB_ACTOR}"
+      - run: git pull origin master --tags
+      - run: echo "💡  The ${{ github.repository }} repository has been cloned to the runner."
+      - run: echo "🖥️  The workflow is now ready to test your code on the runner."
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.10.0
+          registry-url: 'https://registry.npmjs.org'
+          cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
+      - name: Install dependencies
+        run: npm ci
+      - name: "Set up env file"
+        shell: bash
+        run: |
+          touch .env
+          echo WL=$WL | tr [:lower:] [:upper:] >> .env
+          echo ENVIRONMENT=$ENVIRONMENT | tr [:lower:] [:upper:] >> .env
+          cat .env
+      - name: "Check version"
+        run: node -p "require('./apps/electron-app/package.json').version"
+      - name: "Build the package"
+        shell: bash
+        run: |
+          npm run app:package:dev
+          npm run app:electron:publish
+      # - name: "Upload artefacts to release draft ${{needs.version-app.outputs.tag}}"
+      #   run: for file in ./apps/electron-app/release/*; do ([ -f "$file" ]) && (gh release upload $RELEASE_VERSION "$file") || echo "not uploaded $file"; done
+      - run: echo "🍏  This job's status is ${{ job.status }}."

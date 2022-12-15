@@ -1,0 +1,53 @@
+{
+  "extends": "../../.eslintrc.json",
+  "ignorePatterns": [
+    "!**/*"
+  ],
+  "overrides": [
+    {
+      "files": [
+        "*.ts"
+      ],
+      "parserOptions": {
+        "project": ["apps/electron-app/tsconfig.*?.json"],
+        "createDefaultProgram": true
+      },
+      "extends": [
+        "plugin:@nrwl/nx/angular",
+        "plugin:@angular-eslint/template/process-inline-templates"
+      ],
+      "rules": {
+        "@angular-eslint/component-selector": [
+          "error",
+          {
+            "type": "element",
+            "prefix": "app",
+            "style": "kebab-case"
+          }
+        ],
+        "@angular-eslint/component-class-suffix": [
+          "error",
+          {
+            "suffixes": [ "Component", "Modal" ]
+          }
+        ],
+        "@angular-eslint/directive-selector": [
+          "error",
+          {
+            "type": "attribute",
+            "prefix": "app",
+            "style": "camelCase"
+          }
+        ],
+        "@angular-eslint/use-pipe-transform-interface": "error"
+      }
+    },
+    {
+      "files": [
+        "*.html"
+      ],
+      "extends": ["plugin:@nrwl/nx/angular-template"],
+      "rules": {}
+    }
+  ]
+}

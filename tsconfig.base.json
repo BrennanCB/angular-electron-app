@@ -1,0 +1,39 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "emitDecoratorMetadata": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "strictNullChecks": true,
+    "strictPropertyInitialization": false,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "downlevelIteration": true,
+    "experimentalDecorators": true,
+    "moduleResolution": "node",
+    "importHelpers": true,
+    "target": "es2020",
+    "outDir": "./dist/out-tsc",
+    "module": "esnext",
+    "lib": ["es2017", "es2016", "es2015", "dom"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "baseUrl": ".",
+    "stripInternal": true
+  },
+  "exclude": ["node_modules", "tmp", "dist", "release"],
+  "angularCompilerOptions": {
+    "strictTemplates": true,
+    "annotateForClosureCompiler": true,
+    "strictInjectionParameters": true,
+    "skipTemplateCodegen": false,
+    "preserveWhitespaces": true,
+    "skipMetadataEmit": false,
+    "disableTypeScriptVersionCheck": true
+  }
+}
