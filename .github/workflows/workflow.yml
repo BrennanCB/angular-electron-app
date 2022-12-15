@@ -65,7 +65,7 @@ jobs:
   release:
     needs: version-app
     env:
-      GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.VERSION_TOKEN }}
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository code
@@ -95,7 +95,7 @@ jobs:
       - release
     runs-on: macos-latest
     env:
-      GH_TOKEN: ${{ secrets.BUILD_TOKEN }}
+      GH_TOKEN: ${{ secrets.VERSION_TOKEN }}
       RELEASE_VERSION: ${{ needs.version-app.outputs.tag }}
       USE_HARD_LINKS: false
     steps:
